@@ -3,17 +3,51 @@
 ## Major changes to upstream
 
 * Created a django admin command for creating users and approving them for a competition, given a list of users/emails.
-* Upgraded caddy to official caddy 2 image for external account binding.
-  * Since then there is always the same error in the logs
-  "minio-1 | 2024/05/31 12:49:18 http: TLS handshake error from [IP]: EOF" but everything seems to work.
-  * Edit: upstream has now also upgraded to caddy 2
+* Replaced organization logos on homepage with ScaDS.AI logo.
+* Adjusted Caddyfile for external account binding.
 * Enabled TLS/HTTPS for minio by sharing the certificates from caddy.
   They currently need to be **copied manually** when the certificate gets renewed, using something like
   ```
-  mkdir -p certs/minio && sudo cp certs/caddy/certificates/acme.sectigo.com-v2-ov/hackathon.scads.ai/hackathon.scads.ai.key $_/private.key
-  mkdir -p certs/minio && sudo cp certs/caddy/certificates/acme.sectigo.com-v2-ov/hackathon.scads.ai/hackathon.scads.ai.crt $_/public.crt
+  mkdir -p certs/minio && sudo cp -a caddy_data/caddy/certificates/acme.sectigo.com-v2-ov/hackathon.scads.ai/hackathon.scads.ai.key $_/private.key
+  mkdir -p certs/minio && sudo cp -a caddy_data/caddy/certificates/acme.sectigo.com-v2-ov/hackathon.scads.ai/hackathon.scads.ai.crt $_/public.crt
   ```
   Should likely instead either copy it automatically or reverse proxy to minio.
+
+## Extra deployment instructions
+
+### Development
+
+* Add `127.0.0.1	minio` to `/etc/hosts`.
+
+### Production
+
+* In addition to port 443, open at least port tcp/9000.
+* It seems it is not necessary to set the public bucket to read and write, as it is described in the deployment instructions.
+* The following service is used but it might not be necessary (anymore).
+
+  ```
+  # /etc/systemd/system/keep_codabench_worker_running.service
+
+  [Unit]
+  Description=Start the Codabench compute worker again because sometimes it shuts down (either because connection loss or because of the VM causing it somehow)
+
+  [Service]
+  Type=oneshot
+  ExecStart=/usr/bin/docker compose -f /home/hackathon/DIRECTORY HERE/docker-compose.yml up -d compute_worker
+  ```
+
+  ```
+  # /etc/systemd/system/keep_codabench_worker_running.timer
+
+  [Unit]
+  Description=Restart Codabench compute_worker container every hour
+
+  [Timer]
+  OnCalendar=*:0/30
+
+  [Install]
+  WantedBy=timers.target
+  ```
 
 ## What is Codabench?
 
@@ -35,15 +69,17 @@ If you wish to configure your own instance of Codabench platform, here are the i
 
 ```
 $ cp .env_sample .env
-$ docker-compose up -d
-$ docker-compose exec django ./manage.py migrate
-$ docker-compose exec django ./manage.py generate_data
-$ docker-compose exec django ./manage.py collectstatic --noinput
+$ docker compose up -d
+$ docker compose exec django ./manage.py migrate
+$ docker compose exec django ./manage.py generate_data
+$ docker compose exec django ./manage.py collectstatic --noinput
 ```
 
-You can now login as username "admin" with password "admin" at http://localhost:8000
+You can now login as username "admin" with password "admin" at http://localhost/
 
 If you ever need to reset the database, use the script `./reset_db.sh`
+
+For more information about installation, checkout [Codabench Basic Installation Guide](https://github.com/codalab/codabench/wiki/Codabench-Installation) and [How to Deploy Server](https://github.com/codalab/codabench/wiki/How-to-deploy-Codabench-on-your-server).
 
 
 ## License
