@@ -18,6 +18,8 @@
 ### Development
 
 * Add `127.0.0.1	minio` to `/etc/hosts`.
+* Comment out the TLS block, that has the EAB variables, in the Caddyfile.
+* Change the connection string in the createbuckets docker compose service back to `http://minio:$MINIO_PORT`.
 
 ### Production
 
