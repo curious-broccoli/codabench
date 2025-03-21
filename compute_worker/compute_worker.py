@@ -50,6 +50,7 @@ else:
     MAX_PROCESSES = -1
 
 MAX_MEMORY = os.environ.get("MAX_MEMORY")
+MAX_CPUS = os.environ.get("MAX_CPUS")
 
 
 # -----------------------------------------------
@@ -667,6 +668,9 @@ class Run:
 
         if MAX_MEMORY:
             engine_cmd.extend(['--memory', MAX_MEMORY + 'm'])
+
+        if MAX_CPUS:
+            engine_cmd.append('--cpus=' + MAX_CPUS)
 
         # GPU or not
         if os.environ.get("USE_GPU"):
