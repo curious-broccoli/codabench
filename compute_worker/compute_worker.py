@@ -42,6 +42,18 @@ app.conf.task_queues = [
 
 
 # -----------------------------------------------
+# Resource limits
+# -----------------------------------------------
+if os.environ.get("MAX_PROCESSES"):
+    MAX_PROCESSES = os.environ.get("MAX_PROCESSES")
+else:
+    MAX_PROCESSES = -1
+
+MAX_MEMORY = os.environ.get("MAX_MEMORY")
+MAX_CPUS = os.environ.get("MAX_CPUS")
+
+
+# -----------------------------------------------
 # Directories
 # -----------------------------------------------
 # Setup base directories used by all submissions
@@ -649,7 +661,16 @@ class Run:
 
             # Don't buffer python output, so we don't lose any
             '-e', 'PYTHONUNBUFFERED=1',
+
+            # Resource limits
+            '--pids-limit', str(MAX_PROCESSES),
         ]
+
+        if MAX_MEMORY:
+            engine_cmd.extend(['--memory', MAX_MEMORY + 'm'])
+
+        if MAX_CPUS:
+            engine_cmd.append('--cpus=' + MAX_CPUS)
 
         # GPU or not
         if os.environ.get("USE_GPU"):
