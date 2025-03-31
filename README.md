@@ -15,8 +15,15 @@
 
 ## Extra deployment instructions
 
+In addition to [the instructions](https://github.com/codalab/codabench/wiki/How-to-deploy-Codabench-on-your-server).
+
+If the site loads but looks like CSS/JS is missing, check the `builder` container and if it ran properly.
+
 ### Development
 
+* The `.env` doesn't need to be modified.
+* Django debug settings don't need to be changed.
+* Buckets don't need to be adjusted manually.
 * Add `127.0.0.1	minio` to `/etc/hosts`.
 * Comment out the TLS block, that has the EAB variables, in the Caddyfile.
 * Change the connection string in the createbuckets docker compose service back to `http://minio:$MINIO_PORT`.
