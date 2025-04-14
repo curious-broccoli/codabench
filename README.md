@@ -12,6 +12,7 @@
   mkdir -p certs/minio && sudo cp -a caddy_data/caddy/certificates/acme.sectigo.com-v2-ov/hackathon.scads.ai/hackathon.scads.ai.crt $_/public.crt
   ```
   Should likely instead either copy it automatically or reverse proxy to minio.
+* Disabled CODALAB_IGNORE_CLEANUP_STEP because with big file submissions it takes up too much space.
 
 ## Extra deployment instructions
 
