@@ -232,6 +232,7 @@ services:
       - BROKER_URL=pyamqp://${RABBITMQ_DEFAULT_USER}:${RABBITMQ_DEFAULT_PASS}@${RABBITMQ_HOST}:${RABBITMQ_PORT}//
       # Make the worker leave behind the submission so we can examine it
       #- CODALAB_IGNORE_CLEANUP_STEP=1
+    restart: unless-stopped
     logging:
       options:
         max-size: "20m"
