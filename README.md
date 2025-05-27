@@ -31,8 +31,18 @@ If the site loads but looks like CSS/JS is missing, check the `builder` containe
 
 ### Production
 
+.env should likely have:
+```
+ALLOWED_HOSTS=localhost,hackathon.scads.ai
+SUBMISSIONS_API_URL=https://hackathon.scads.ai/api
+DOMAIN_NAME=hackathon.scads.ai
+AWS_S3_ENDPOINT_URL=https://hackathon.scads.ai:9000/
+```
+
+* Change all secrets in .env
 * In addition to port 443, open at least port tcp/9000.
 * It seems it is not necessary to set the public bucket to read and write, as it is described in the deployment instructions.
+* minio TLS: see above
 * The following service is used but it might not be necessary (anymore).
 
   ```
