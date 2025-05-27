@@ -1,5 +1,64 @@
 ![Codabench logo](src/static/img/codabench_black.png) [![Circle CI](https://circleci.com/gh/codalab/codabench.svg?style=shield)](https://app.circleci.com/pipelines/github/codalab/codabench)
 
+## Major changes to upstream
+
+* Created a django admin command for creating users and approving them for a competition, given a list of users/emails.
+* Replaced organization logos on homepage with ScaDS.AI logo.
+* Adjusted Caddyfile for external account binding.
+* Enabled TLS/HTTPS for minio by sharing the certificates from caddy.
+  They currently need to be **copied manually** when the certificate gets renewed, using something like
+  ```
+  mkdir -p certs/minio && sudo cp -a caddy_data/caddy/certificates/acme.sectigo.com-v2-ov/hackathon.scads.ai/hackathon.scads.ai.key $_/private.key
+  mkdir -p certs/minio && sudo cp -a caddy_data/caddy/certificates/acme.sectigo.com-v2-ov/hackathon.scads.ai/hackathon.scads.ai.crt $_/public.crt
+  ```
+  Should likely instead either copy it automatically or reverse proxy to minio.
+* Disabled CODALAB_IGNORE_CLEANUP_STEP because with big file submissions it takes up too much space.
+
+## Extra deployment instructions
+
+In addition to [the instructions](https://github.com/codalab/codabench/wiki/How-to-deploy-Codabench-on-your-server).
+
+If the site loads but looks like CSS/JS is missing, check the `builder` container and if it ran properly.
+
+### Development
+
+* The `.env` doesn't need to be modified.
+* Django debug settings don't need to be changed.
+* Buckets don't need to be adjusted manually.
+* Add `127.0.0.1	minio` to `/etc/hosts`.
+* Comment out the TLS block, that has the EAB variables, in the Caddyfile.
+* Change the connection string in the createbuckets docker compose service back to `http://minio:$MINIO_PORT`.
+
+### Production
+
+* In addition to port 443, open at least port tcp/9000.
+* It seems it is not necessary to set the public bucket to read and write, as it is described in the deployment instructions.
+* The following service is used but it might not be necessary (anymore).
+
+  ```
+  # /etc/systemd/system/keep_codabench_worker_running.service
+
+  [Unit]
+  Description=Start the Codabench compute worker again because sometimes it shuts down (either because connection loss or because of the VM causing it somehow)
+
+  [Service]
+  Type=oneshot
+  ExecStart=/usr/bin/docker compose -f /home/hackathon/DIRECTORY HERE/docker-compose.yml up -d compute_worker
+  ```
+
+  ```
+  # /etc/systemd/system/keep_codabench_worker_running.timer
+
+  [Unit]
+  Description=Restart Codabench compute_worker container every hour
+
+  [Timer]
+  OnCalendar=*:0/30
+
+  [Install]
+  WantedBy=timers.target
+  ```
+
 ## What is Codabench?
 
 Codabench is an open-source web-based platform that enables researchers, developers, and data scientists to collaborate, with the goal of advancing research fields where machine learning and advanced computation is used. Codabench helps to solve many common problems in the arena of data-oriented research through its online community where people can share worksheets and participate in competitions and benchmarks. It can be seen as a version 2 of [CodaLab Competitions](https://github.com/codalab/codalab-competitions).
@@ -14,7 +73,7 @@ To see Codabench in action, visit [codabench.org](https://www.codabench.org/).
 
 ## Quick installation (for Linux)
 
-_To participate, or even organize your own benchmarks or competitions, **you don't need to install anything**, you just need to sign in an instance of the platform (e.g. [this one](https://www.codabench.org/)). 
+_To participate, or even organize your own benchmarks or competitions, **you don't need to install anything**, you just need to sign in an instance of the platform (e.g. [this one](https://www.codabench.org/)).
 If you wish to configure your own instance of Codabench platform, here are the instructions:_
 
 
@@ -47,7 +106,7 @@ http://www.opensource.org/licenses/apache2.0.php
 ```
 @article{codabench,
     title = {Codabench: Flexible, easy-to-use, and reproducible meta-benchmark platform},
-    author = {Zhen Xu and Sergio Escalera and Adrien Pavão and Magali Richard and 
+    author = {Zhen Xu and Sergio Escalera and Adrien Pavão and Magali Richard and
               Wei-Wei Tu and Quanming Yao and Huan Zhao and Isabelle Guyon},
     journal = {Patterns},
     volume = {3},
