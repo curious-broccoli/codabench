@@ -173,7 +173,7 @@ def get_folder_size_in_gb(folder):
             total_size += os.path.getsize(path)
         elif os.path.isdir(path):
             total_size += get_folder_size_in_gb(path)
-    return total_size / 1024 / 1024 / 1024
+    return total_size / 1000 / 1000 / 1000 # GB: decimal system (1000^3)
 
 
 def delete_files_in_folder(folder):
@@ -292,7 +292,7 @@ class Run:
             else:
                 logger.info(time.time() - start)
                 if time.time() - start > expiration_seconds:
-                    timeout_error_message = f"Detailed results not written to after {expiration_seconds} seconds, exiting!"
+                    timeout_error_message = f"WARNING: Detailed results not written before the execution."
                     logger.warning(timeout_error_message)
             await asyncio.sleep(5)
             file_path = self.get_detailed_results_file_path()

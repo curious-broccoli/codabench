@@ -43,6 +43,8 @@ class PhaseSerializer(WritableNestedModelSerializer):
             'max_submissions_per_person',
             'auto_migrate_to_this_phase',
             'hide_output',
+            'hide_prediction_output',
+            'hide_score_output',
             'leaderboard',
             'public_data',
             'starting_kit',
@@ -124,6 +126,8 @@ class PhaseDetailSerializer(serializers.ModelSerializer):
             'max_submissions_per_person',
             'auto_migrate_to_this_phase',
             'hide_output',
+            'hide_prediction_output',
+            'hide_score_output',
             # no leaderboard
             'public_data',
             'starting_kit',
@@ -267,7 +271,8 @@ class CompetitionSerializer(DefaultUserCreateMixin, WritableNestedModelSerialize
             'reward',
             'contact_email',
             'report',
-            'whitelist_emails'
+            'whitelist_emails',
+            'forum_enabled'
         )
 
     def validate_phases(self, phases):
@@ -391,6 +396,7 @@ class CompetitionDetailSerializer(serializers.ModelSerializer):
             'contact_email',
             'report',
             'whitelist_emails',
+            'forum_enabled'
         )
 
     def get_leaderboards(self, instance):

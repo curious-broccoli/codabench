@@ -7,7 +7,7 @@
             <div class="item" data-tab="phases-tab">Phases</div>
             <div class="item" data-tab="participate-tab">My Submissions</div>
             <div class="item" data-tab="results-tab">Results</div>
-            <a class="item" href="{URLS.FORUM(competition.forum)}">Forum</a>
+            <a if="{ competition.forum_enabled }" class="item" href="{URLS.FORUM(competition.forum)}">Forum</a>
             <div class="right menu">
                 <div class="item">
                     <help_button href="https://github.com/codalab/competitions-v2/wiki/Competition-Detail-Page"
@@ -91,7 +91,7 @@
                                         <td if="{competition.is_admin}" class="center aligned">
                                             <i if="{file.available}" class="checkmark box icon green"></i>
                                         </td>
-                                        <td>{filesize(file.file_size * 1024)}</td>
+                                        <td>{pretty_bytes(file.file_size)}</td>
                                     </tr>
                                     <!-- Conditional row if no files to show -->
                                     <tr class="center aligned">
