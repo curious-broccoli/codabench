@@ -1,8 +1,7 @@
 {$DOMAIN_NAME} {
 	# HTTPS Options
 	tls {$TLS_EMAIL} {
-		ca https://acme.sectigo.com/v2/OV
-		eab {$EAB_KID} {$EAB_HMAC}
+		ca https://acme.pki.cert.tu-dresden.de/
 	}
 
 	# Test HTTPS setup

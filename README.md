@@ -8,8 +8,8 @@
 * Enabled TLS/HTTPS for minio by sharing the certificates from caddy.
   They currently need to be **copied manually** when the certificate gets renewed, using something like
   ```
-  mkdir -p certs/minio && sudo cp -a caddy_data/caddy/certificates/acme.sectigo.com-v2-ov/hackathon.scads.ai/hackathon.scads.ai.key $_/private.key
-  mkdir -p certs/minio && sudo cp -a caddy_data/caddy/certificates/acme.sectigo.com-v2-ov/hackathon.scads.ai/hackathon.scads.ai.crt $_/public.crt
+  mkdir -p certs/minio && sudo cp -a caddy_data/caddy/certificates/acme.pki.cert.tu-dresden.de/hackathon.scads.ai/hackathon.scads.ai.key $_/private.key
+  mkdir -p certs/minio && sudo cp -a caddy_data/caddy/certificates/acme.pki.cert.tu-dresden.de/hackathon.scads.ai/hackathon.scads.ai.crt $_/public.crt
   ```
   Should likely instead either copy it automatically or reverse proxy to minio.
 * Disabled CODALAB_IGNORE_CLEANUP_STEP because with big file submissions it takes up too much space.
@@ -26,7 +26,7 @@ If the site loads but looks like CSS/JS is missing, check the `builder` containe
 * Django debug settings don't need to be changed.
 * Buckets don't need to be adjusted manually.
 * Add `127.0.0.1	minio` to `/etc/hosts`.
-* Comment out the TLS block, that has the EAB variables, in the Caddyfile.
+* Comment out the first TLS block in the Caddyfile.
 * Change the connection string in the createbuckets docker compose service back to `http://minio:$MINIO_PORT`.
 
 ### Production
