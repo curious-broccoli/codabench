@@ -6,12 +6,7 @@
 * Replaced organization logos on homepage with ScaDS.AI logo.
 * Adjusted Caddyfile for external account binding.
 * Enabled TLS/HTTPS for minio by sharing the certificates from caddy.
-  They currently need to be **copied manually** when the certificate gets renewed, using something like
-  ```
-  mkdir -p certs/minio && sudo cp -a caddy_data/caddy/certificates/acme.pki.cert.tu-dresden.de/hackathon.scads.ai/hackathon.scads.ai.key $_/private.key
-  mkdir -p certs/minio && sudo cp -a caddy_data/caddy/certificates/acme.pki.cert.tu-dresden.de/hackathon.scads.ai/hackathon.scads.ai.crt $_/public.crt
-  ```
-  Should likely instead either copy it automatically or reverse proxy to minio.
+  They currently need to be copied manually/automatically. Reverse proxying likely wouldn't work without a subdomain.
 * Disabled CODALAB_IGNORE_CLEANUP_STEP because with big file submissions it takes up too much space.
 
 ## Extra deployment instructions
@@ -42,7 +37,31 @@ AWS_S3_ENDPOINT_URL=https://hackathon.scads.ai:9000/
 * Change all secrets in .env
 * In addition to port 443, open at least port tcp/9000.
 * It seems it is not necessary to set the public bucket to read and write, as it is described in the deployment instructions.
-* minio TLS: see above
+* minio TLS: create the following service. Maybe minio also needs to be restarted to use new certificate files.
+  ```
+  # /etc/systemd/system/copy_certificates_to_minio.service
+
+  [Unit]
+  Description=Copy caddy's certificates to minio
+
+  [Service]
+  ExecStart=/bin/bash -c "cd /home/hackathon/DIRECTORY HERE && mkdir -p certs/minio && cp -a caddy_data/caddy/certificates/acme.pki.cert.tu-dresden.de/hackathon.scads.ai/hackathon.scads.ai.key $_/private.key && mkdir -p certs/minio && sudo cp -a caddy_data/caddy/certificates/acme.pki.cert.tu-dresden.de/hackathon.scads.ai/hackathon.scads.ai.crt $_/public.crt"
+  Type=oneshot
+  ```
+
+  ```
+  # /etc/systemd/system/copy_certificates_to_minio.timer
+
+  [Unit]
+  Description=Copy caddy's certificates to minio
+
+  [Timer]
+  OnBootSec=1min
+  OnUnitActiveSec=2min
+
+  [Install]
+  WantedBy=timers.target
+  ```
 * The following service is used but it might not be necessary (anymore).
 
   ```
