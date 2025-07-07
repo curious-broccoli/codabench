@@ -41,6 +41,15 @@
 	# Serving dynamic requests:
 	reverse_proxy @noStatic django:8000
 
+	# Admin management
+	handle_path /rabbitmq/* {
+		reverse_proxy {$RABBITMQ_HOST}:{$RABBITMQ_MANAGEMENT_PORT}
+	}
+
+	handle_path /flower/* {
+		reverse_proxy flower:{$FLOWER_PUBLIC_PORT}
+	}
+
 	# Allows to use `.gz` files when available:
 	encode gzip
 
