@@ -2,15 +2,23 @@ from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.views.generic import TemplateView
 from django.db.models import Q
 
-from competitions.models import Submission
+from competitions.models import Competition, Submission
 from announcements.models import Announcement, NewsPost
 
-from django.shortcuts import render
+from django.shortcuts import redirect, render
+from django.urls import reverse
 from utils.data import pretty_bytes
 
 
 class HomeView(TemplateView):
     template_name = 'pages/home.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_staff:
+            published_competition = Competition.objects.filter(published=True).first()
+            if published_competition:
+                return redirect(reverse("competitions:detail", args=[published_competition.pk]))
+        return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)

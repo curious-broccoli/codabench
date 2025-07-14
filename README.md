@@ -8,6 +8,8 @@
 * Enabled TLS/HTTPS for minio by sharing the certificates from caddy.
   They currently need to be copied manually/automatically. Reverse proxying likely wouldn't work without a subdomain.
 * Disabled CODALAB_IGNORE_CLEANUP_STEP because with big file submissions it takes up too much space.
+* reverse proxy to flower and rabbit management
+* redirect home page to the first published competition for everyone except staff
 
 ## Extra deployment instructions
 
