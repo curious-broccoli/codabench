@@ -17,6 +17,8 @@ In addition to [the instructions](https://github.com/codalab/codabench/wiki/How-
 
 If the site loads but looks like CSS/JS is missing, check the `builder` container and if it ran properly.
 
+The config for the outgoing server in the [Thunderbird mailbox FAQ](https://faq.tickets.tu-dresden.de/otrs/public.pl?Action=PublicFAQZoom;ItemID=603;ZoomBackLink=QWN0aW9uPVB1YmxpY0ZBUVNlYXJjaDtTdWJhY3Rpb249U2VhcmNoO0tleXdvcmQ9VGh1bmRlcmJp%0AcmQ7VmlhPVRhZ0Nsb3VkO1NvcnRCeT1UaXRsZTtPcmRlcj1VcDtTdGFydEhpdD0x%0A;) basically shows how to set up the email sending.
+
 ### Development
 
 * The `.env` doesn't need to be modified.
@@ -89,6 +91,7 @@ AWS_S3_ENDPOINT_URL=https://hackathon.scads.ai:9000/
   [Install]
   WantedBy=timers.target
   ```
+* Check that the correct domain is set in the [Site model](https://hackathon.scads.ai/admin/sites/site/), otherwise links in emails might use the wrong domain.
 
 ## What is Codabench?
 
