@@ -81,7 +81,7 @@ services:
       /bin/sh -c "
       set -x;
       if [ -n \"$MINIO_ROOT_USER\" ] && [ -n \"$MINIO_ROOT_PASSWORD\" ] && [ -n \"$MINIO_PORT\" ]; then
-        until /usr/bin/mc config host add minio_docker http://minio:$MINIO_PORT $MINIO_ROOT_USER $MINIO_ROOT_PASSWORD && break; do
+        until /usr/bin/mc config host add minio_docker https://$DOMAIN_NAME:$MINIO_PORT $MINIO_ROOT_USER $MINIO_ROOT_PASSWORD && break; do
           echo '...waiting...' && sleep 5;
         done;
         /usr/bin/mc mb minio_docker/$AWS_STORAGE_BUCKET_NAME || echo 'Bucket $AWS_STORAGE_BUCKET_NAME already exists.';
